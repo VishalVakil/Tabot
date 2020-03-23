@@ -1,0 +1,729 @@
+// See https://github.com/dialogflow/dialogflow-fulfillment-nodejs
+// for Dialogflow fulfillment library docs, samples, and to report issues
+'use strict';
+ 
+const functions = require('firebase-functions');
+const {WebhookClient} = require('dialogflow-fulfillment');
+const {Card, Suggestion} = require('dialogflow-fulfillment');
+ 
+process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
+ 
+exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
+  const agent = new WebhookClient({ request, response });
+  console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
+  console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+ 
+  function suggestionmed(agent) {
+    agent.add(`Please select for which ailment do you want suggestion:`);
+    agent.add(new Suggestion(`Suggestion for Cold`));
+    agent.add(new Suggestion(`Suggestion for Fever`));
+  }
+  function feversymptom(agent) {
+    agent.add(`Do you feel Shivering, shaking or chills:`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+   function feversymptomyes(agent) {
+    agent.add(`Okay and do you have muscles and joints aches or any other body aches:`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+   function frocinintro(agent) {
+    agent.add(`Frocin Paracetamol Tablets are ideal for Aches, Fever and Flu. 
+The dosage should be as directed by the doctor. 
+Select any of the options if you want to know more about Frocin tablets:`);
+    agent.add(new Suggestion(`Caution`));
+    agent.add(new Suggestion(`What is Paracetamol and when is it used`));
+    agent.add(new Suggestion(`No thanks`));
+  }
+    function medavailable(agent) {
+    agent.add(`Following Medicines are available:`);
+    agent.add(new Suggestion(`Nipa Plus`));
+    agent.add(new Suggestion(`Frocin-500`));
+    agent.add(new Suggestion(`Lamocold`));
+    agent.add(new Suggestion(`Metmol-650`));
+    agent.add(new Suggestion(`Dolo-650`));
+  }
+  function nipaintro(agent) {
+    agent.add(`Nipa Plus tablets contains Nimesulide + Paracetamol. 
+Nimesulide with Paracetamol is an ideal combination for the treatment for the problems like pyrexia, painful muscular & orthopaedic conditions, ENT related pain, post surgical pain as well as gynecological conditions, post - operative & dental pain. 
+The combination of Nimesulide with Paracetamol provides two times faster & quick relief with the better safety of both the Brands, it is the best combination in order to control fever & pain.`);
+    agent.add(new Suggestion(`Caution while taking Nipa Plus`));
+    agent.add(new Suggestion(`What is Paracetamol and when is it used?`));
+    agent.add(new Suggestion(`What is Nimesulide?`));
+  }
+  function metmolintro(agent) {
+    agent.add(`Metmol 650 mg tablets are paracetamol which are ideal for Aches, Fever and Flu. 
+The dosage should be as directed by the doctor.`);
+    agent.add(new Suggestion(`Caution`));
+    agent.add(new Suggestion(`What is Paracetamol and when is it used?`));
+  }
+  function cyclotabintro(agent) {
+    agent.add(`Cyclotab Tablet is a part of the drug group known as dopamine antagonists. 
+It can be used for treating the slow passage of food in your gastrointestinal tract, generally associated with gastritis or diabetes. 
+Cyclotab Tablet can treat the symptoms of vomiting, nausea, bloating and feeling full. 
+Apart from that, it can also prevent vomiting and nausea that is associated with Parkinson’s disease.`);
+    agent.add(new Suggestion(`Caution`));
+    agent.add(new Suggestion(`What is dopamine drug?`));
+    agent.add(new Suggestion(`What is Parkinson’s disease?`));
+    agent.add(new Suggestion(`Usual Dosage`));
+  }
+  function cyclocautionintro(agent) {
+    agent.add(`You are advised not to take Cyclotab Tablet if you have the following conditions:
+
+-> An allergy to Cyclotab Tablet or any other ingredient of this medicine
+-> Bleeding problems or blockage in your stomach or in the intestine
+-> Tumour in the pituitary gland
+-> Cardiac disease
+-> Incorrect levels of magnesium, potassium or calcium in the blood
+-> Severe/moderate liver impairment
+
+The possible side effects of taking Cyclotab Tablet can be diarrhea, headache, migraine, dryness of the mouth or breast pain. 
+These side effects are not very common and go away in a few days. 
+If not, you can consult your doctor.`);
+  }
+   function cyclodosintro(agent) {
+    agent.add(`The usual dose of Cyclotab Tablet is 10 mg, which is generally taken 15-30 minutes prior to your meals. The maximum dose that is recommended for adults is 30 mg. 
+The dose that would suit your body depends on your body weight, other medicines that you are currently taking and your health condition. Ensure that you take Cyclotab Tablet only in that amount as instructed by the doctor. In case you miss a dose, you can take it later. 
+However, do not take two doses together to make up for the previous one that has been missed. Overdose can cause disorientation, light-headedness, losing muscle or balance control or difficulty in talking.`);
+  }
+  function lamocoldintro(agent) {
+    agent.add(`Lamocold has the composition of Chlorpheniramine maleate 2 MG + Paracetamol 500 MG + Phenylephrine 5 MG
+This medicine is used to relieve the symptoms of a common cold associated with fever and can also relieves the symptoms of a cough but does not treat the underlying cause.`);
+    agent.add(new Suggestion(`Caution`));
+    agent.add(new Suggestion(`What is Chlorpheniramine maleate?`));
+    agent.add(new Suggestion(`What is Paracetamol and when is it used?`));
+    agent.add(new Suggestion(`What is Phenylephrine?`));
+  }
+  function musclejointpain(agent) {
+    agent.add(`Do you have high Body Temperature?`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function askage(agent) {
+    agent.add(`Please select your age: `);
+    agent.add(new Suggestion(`16 years and Older`));
+    agent.add(new Suggestion(`12 to 15 years`));
+    agent.add(new Suggestion(`10 to 11 years`));
+    agent.add(new Suggestion(`less than 10 years`));
+  }
+  function symsuggestion16(agent) {
+    agent.add(`You have symptoms of fever🤒.
+I would suggest you to take rest and you can take any 500 mg -1 g paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Dolo 650 mg`));
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function symsuggestion12(agent) {
+    agent.add(`You have symptoms of fever🤒.
+I would suggest you to take rest and you can take any 480-750 mg paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Dolo 650 mg`));
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function symsuggestion10(agent) {
+    agent.add(`You have symptoms of fever🤒.
+I would suggest you to take rest and you can take any 480-500 mg paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function symsuggestionless10(agent) {
+    agent.add(`You have symptoms of fever🤒. 
+Please consult your doctor for Dosage and treatment.`);
+  }
+  function suggestion16(agent) {
+    agent.add(`You can take any 500 mg -1 g paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Dolo 650 mg`));
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function suggestion12(agent) {
+    agent.add(`You can take any 480-750 mg paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Dolo 650 mg`));
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function suggestion10(agent) {
+    agent.add(`You can take any 480-500 mg paracetamol tablets but also consult your doctor for treatment.`);
+    agent.add(new Suggestion(`Frocin 500 mg`));
+  }
+  function suggestionless10(agent) {
+    agent.add(`Please consult your doctor for Dosage and treatment.`);
+  }
+  function headache(agent) {
+    agent.add(`Please select what kind of headache do you have`);
+    agent.add(new Suggestion(`Headache with Fever`));
+    agent.add(new Suggestion(`Headache without Fever`));
+  }
+  function headfever(agent) {
+    agent.add(`Do you have diarrhea`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function Vomiting(agent) {
+    agent.add(`Select which of the following do you have:`);
+    agent.add(new Suggestion(`Vomiting`));
+    agent.add(new Suggestion(`Loose Motion`));
+    agent.add(new Suggestion(`Both Vomiting and Loose Motion`));
+    agent.add(new Suggestion(`None of the above symptoms`));
+  }
+  function FDVA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea and Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function FDVNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Diarrhea and Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    } 
+  function FDL(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea
+2) Tab Metrogyl 400 MG - for Loose Motion
+3) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Tablet Metrogyl 400 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function feverques(agent) {
+    agent.add(`Do you have Fever`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function Vomitques(agent) {
+    agent.add(`Do you have Vomiting`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function adultques(agent) {
+    agent.add(`Are you an adult?`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function FDVLNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Diarrhea and Vomiting
+2) Tab Metrogyl 400 MG - for Loose Motion
+3) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Tablet Metrogyl 400 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function FDVLA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea and Vomiting
+2) Tab Metrogyl 400 MG - for Loose Motion
+3) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Tablet Metrogyl 400 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function VDNFA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea and Vomiting
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    }
+  function VDNFNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Diarrhea and Vomiting
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    }
+  function VNDNFNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - Vomiting
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    }
+  function VNDNFA(agent) {
+    agent.add(`I would suggest you to take:
+1)  Cap Pan D - for Vomiting
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    }
+  function VNDFA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function VNDFNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    } 
+  function coldques(agent) {
+    agent.add(`Do you have Cold?`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function NYYDVCA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Vomiting
+2) Lemocold - for Cold
+3) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Lamocold`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function NYYDVCNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Vomiting
+2) Lemocold - for Cold
+3) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Lemocold`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function NYNDVCA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function NYNDVCNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Vomiting
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function FeverColdSuggestion(agent) {
+    agent.add(`I would suggest you to take:
+1) Lemocold - for Cold
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Lemocold`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function Consultyoudoctor(agent) {
+    agent.add(`I would suggest you to take:
+1) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function StomachQues(agent) {
+    agent.add(`Select which of the following do you have?`);
+    //agent.add(new Suggestion(`TO BE CHANGED`));
+    agent.add(new Suggestion(`Pain in Right side of the Abdomen`));
+    agent.add(new Suggestion(`Pain in Middle part of the Abdomen`));
+    agent.add(new Suggestion(`Pain in Left side of the Abdomen`));
+    agent.add(new Suggestion(`I Don't Know`));
+  }
+  function RSStomach(agent) {
+    agent.add(`Do you feel Burning Sensation in urine?`);
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function LSStomach(agent) {
+    agent.add(`You must have Renal Stone please consult the doctor for the treatment.`);
+  }
+  function BRSStomach(agent) {
+    agent.add(`You must have Urinary Tract Infection or Renal Stone
+If you have Renal Stone then consult the doctor and if you have Urinary Tract Infection then take the following medicines as per your doctors precription
+1) Tab Norflox 400 MG - Antibiotic for Infection
+2) Tab Cyclopam
+3) Cap Pan D`);
+    agent.add(new Suggestion(`Tablet Norflox 400 MG`));
+    agent.add(new Suggestion(`Tablet Cyclopam`));
+    agent.add(new Suggestion(`Capsule Pan D`));
+  }
+  function consultdoc(agent) {
+    agent.add(`Please see the doctor as soon as possible`);
+  }
+  function MStomach(agent) {
+    agent.add(`Do you feel Burning Sensation in Stomach?`); // ASK THE DOCTOR
+    agent.add(new Suggestion(`Yes`));
+    agent.add(new Suggestion(`No`));
+  }
+  function acidity(agent) {
+    agent.add(`You must have acidity
+You can take any of the following mediciines:
+-> Cap Pan D
+-> Liq Digene - Used to treat constipation, acidity and gas problems
+-> Tab Oson-O - Antibiotic for Infection`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Liquid Digene`));
+    agent.add(new Suggestion(`Tablet Oson-O`));
+  }
+  //
+  function DFNVNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Diarrhea
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function DFNVA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea
+2) Dolo 650 - for Fever
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    agent.add(new Suggestion(`Dolo 650`));
+    }
+  function DNFNVA(agent) {
+    agent.add(`I would suggest you to take:
+1) Cap Pan D - for Diarrhea
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Capsule Pan D`));
+    }
+  function DNFNVNA(agent) {
+    agent.add(`I would suggest you to take:
+1) Tab Domstal 10 MG - for Diarrhea
+Also consult your doctor for treatment and Dosage`);
+    agent.add(new Suggestion(`Tablet Domstal 10 MG`));
+    }
+  function headachewf(agent) {
+    agent.add(`It could be caused by any of these below listed problems:
+-> Diabetes
+-> Blood Pressure
+-> Hypertension
+-> Hypoglycemia
+-> Overexertion (Stress)
+-> Inadequate rest
+-> No Deep Sleep
+Please consult the doctor if you have too much pain.`);
+    }
+  function domstalintro(agent) {
+    agent.add(`Domstal 10 MG Tablet is an effective anti-emetic 
+(medicine used to prevent vomiting and nausea). 
+It increases the intestinal movements and facilitates 
+emptying of the bowel.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    agent.add(new Suggestion(`Usage`));
+    }
+  function domstalsidefpre(agent) {
+    agent.add(`Major & minor side effects for Domstal 10 MG Tablet:
+-> Swelling of face, lips, eyelids, tongue, hands and feet 
+-> Difficulty in breathing
+-> Skin rash
+-> Convulsions
+-> Heart rhythm disorders
+-> Disrupted menstrual cycle
+-> Breast pain and tenderness
+-> Dry mouth
+-> Loss of libido
+-> Breast like growth in men
+
+WARNINGS:
+-> This medicine is not recommended for use in pregnant women unless the potential benefits outweigh the risks involved.
+-> Caution in elderly`);
+    agent.add(new Suggestion(`Usage`));
+    }
+
+  function domstalusage(agent) {
+    agent.add(`Nausea and vomiting:
+-> Domstal 10 MG Tablet is used to treat or prevent nausea and vomiting which may be caused due to chemotherapy or digestive system disorder.
+Gastric motility disorders:
+-> Domstal 10 MG Tablet is also used in the treatment of gastric motility disorders which may include delayed or hastened emptying of stomach.`);
+   agent.add(new Suggestion(`Side effects and Precautions`)); 
+   }  
+  function domstalusagemain(agent) {
+    agent.add(`Nausea and vomiting:
+-> Domstal 10 MG Tablet is used to treat or prevent nausea and vomiting which may be caused due to chemotherapy or digestive system disorder.
+Gastric motility disorders:
+-> Domstal 10 MG Tablet is also used in the treatment of gastric motility disorders which may include delayed or hastened emptying of stomach.`); 
+   }
+  function domstalsidefpremain(agent) {
+    agent.add(`Major & minor side effects for Domstal 10 MG Tablet:
+-> Swelling of face, lips, eyelids, tongue, hands and feet 
+-> Difficulty in breathing
+-> Skin rash
+-> Convulsions
+-> Heart rhythm disorders
+-> Disrupted menstrual cycle
+-> Breast pain and tenderness
+-> Dry mouth
+-> Loss of libido
+-> Breast like growth in men
+
+WARNINGS:
+-> This medicine is not recommended for use in pregnant women unless the potential benefits outweigh the risks involved.
+-> Caution in elderly `);
+    }
+  function norfloxintro(agent) {
+    agent.add(`Norfloxacin is used to treat a variety of bacterial infections. This medication belongs to a class of drugs known as quinolone antibiotics. It works by stopping the growth of bacteria. It's a 400 MG tablet`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    }
+  function norfloxsideefpre(agent) {
+    agent.add(`Side Effects:
+-> Nausea, diarrhea, dizziness, headache, or trouble sleeping may occur. 
+If any of these effects last or get worse, tell your doctor or pharmacist promptly.
+
+Precautions:
+-> If you are allergic to it, please consult your pharmacist before consuming it.
+-> Consult doctor if you have Joint problem, Kidney disease, Mental disorder, Nerve problem, High blood pressure in your medical history.`);
+    }
+  function backpain(agent) {
+    agent.add(`Back pain usually resolves with rest and home remedies, but sometimes medical treatment is necessary.
+Please consult the doctor:
+-> If you had any recent injury like - after a fall, etc.
+-> If you have fever
+-> If you have too much weakness
+-> If you have unexplained weight loss`);
+    agent.add(new Suggestion(`What to do if I have Fever?`));
+	agent.add(new Suggestion(`I am not sure if I am having Fever`));
+    }
+  function metrogylintro(agent) {
+    agent.add(`Metrogyl 400 MG Tablet is an antiprotozoal which helps in treating infections in the stomach, genital areas. It is not recommended to take with alcohol with this medicine. Take this medicine only if it is necessary to reduce the development of resistance.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    }
+  function metrogylsidepre(agent) {
+    agent.add(`Major & minor side effects for Metrogyl 400 MG Tablet:
+-> Agitation, Blurred vision, Burning or tingling sensation of hands and feet, Convulsions, Fever and chills, Skin rash, Vaginal irritation, Loss of appetite, Constipation, Yellow colored eyes or skin, Abdominal pain, Dizziness, Change in taste/ Metallic taste, Dry mouth
+
+Precautions and Warnings:
+-> Not recommended in patients with known allergy to Metrogyl 400 MG Tablet or other nitroimidazoles.
+-> This medicine may lower the blood cell count and may lead to leukopenia, thrombocytopenia, and bone marrow aplasia. Close monitoring of WBC count, platelets is necessary. Discontinue the treatment if any signs of low blood cell count appear.
+-> This medicine may cause liver injury. The baseline of liver enzymes should be obtained before initiating the therapy. Any signs of elevation in the liver enzymes should be informed to the doctor. Discontinue the treatment until the levels reach to normal.
+-> This medicine may cause neurological effects like convulsions and peripheral neuropathy. Inform the doctor if you have any neurological problems. Any symptoms of convulsions, tingling or burning sensation of hands and feet should be reported to the doctor.`);
+    }
+  function pandintro(agent) {
+    agent.add(`Pan D is a proton pump inhibitor used for treating intractable nausea, vomiting, gastric ulcer and gastric-secreting tumor. It decreases the acid produced in the stomach and helps in healing ulcers. The medicine has been proved effective in treating vomiting and nausea in people suffering from gastrointestinal issues and Parkinson’s disease. It remains active in the body for up to 24 hours after its dosage.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    }
+   function pandsidepre(agent) {
+    agent.add(`Side effects:
+-> Diarrhea, Headache, Abdominal pain, Dizziness, Sore mouth, Rashes, Eczema, Muscle pains, Blurred vision, Irregular menstruation, Hyperlipidaemia, Loss of libido, Swelling in various body parts.
+
+Warnings:
+-> Taking Pan D capsule for long-term may cause stomach growths known as fundic gland polyps. In such situation, patient should talk with their concerned doctor about their risk. If they are using pantoprazole for longer than 3 years, they can develop a vitamin B-12 deficiency. Talk to your doctor about how to manage this condition.`);
+    }
+  function osonointro(agent) {
+    agent.add(`Oson O Tablet is a combination medication primarily prescribed for treating diarrhoea and/or dysentery. It comprises antibacterial and antiamoebic drugs that fight against parasitic and bacterial infections. It is very effective in treating infectious conditions due to its dual-action.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    }
+  function osonosidepre(agent) {
+    agent.add(`Side effects:
+-> Abdominal Pain, White Patches In The Mouth Or On The Tongue, Joint Pain, Black Or Tarry Stools, Fever With Chills, Chest Tightness, Running Nose, Sneezing, Memory Impairment, Nervousness, Agitation, Disorientation.
+
+Warnings:
+-> It is possible for some people to experience a few common side effects after taking this medication. Some people are more likely to face harmful side effects if they also suffer from other conditions like brain disorders, seizures, heart conditions, myasthenia gravis, epilepsy, tendonitis, bone disorders and problems of the joints.`);
+    }
+  function digeneintro(agent) {
+    agent.add(`It is predominantly used as a gastric acid neutralizer and helps in managing indigestion, bloating and provides relief in irritable bowel movements. Stomach cramps and constipation are the common side effects of this drug. Digene syrup should never be used in cases of gastrointestinal bleeding, appendicitis and intestinal blockage.
+
+Digene Composition: Aluminium hydroxide 830mg + Magnesium hydroxide 185mg +
+Simethicone 50mg + Sodium carboxymethyl cellulose 100mg.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+    }
+   function digenesidepre(agent) {
+    agent.add(`Side effects:
+-> Anorexia (common)
+-> Skin Rashes (less common)
+-> Headaches (less common)
+-> Constipation (less common)
+-> Weakness (common)
+-> Mild stomach discomfort (common)
+-> Respiratory discomfort (less common)
+-> Allergic reactions (less common)
+-> Loss of appetite (common)
+-> Diarrhoea (less common)
+-> Altered taste (less common)
+-> Tiredness (common)
+
+Precautions:
+-> Abdominal Pain: Extra caution is advised for patients with abdominal pain using this drug.
+-> Dehydration: Patients with dehydration should take extra caution while using the drug.
+-> Diarrhoea: Patients with frequent diarrhoea or history of diarrhoea should avoid this drug.
+-> Lactating mothers: Lactating women should avoid the drug unless necessary.
+-> Dose Alteration: Don’t alter/change the schedule of the dose as per your own convenience.`);
+    }
+ function cyclopamintro(agent) {
+    agent.add(`Cyclopam Tablet is used for the treatment of irritable bowel syndrome, period pain, pain in stomach, fever, headache, cold, toothache, joint pain, abdominal pain, and other conditions. The main ingredients of the medicine are Paracetamol and Dicyclomine. The tablet acts as a muscle relaxant and an analgesic pain-killer for various issues in the body.`);
+    agent.add(new Suggestion(`Side effects and Precautions`));
+	agent.add(new Suggestion(`What is Paracetamol?`));
+    }
+  function cyclopamsidepre(agent) {
+    agent.add(`Side effects:
+-> Dizziness
+-> Dry mouth
+-> Anxiety
+-> Excitement
+-> Nausea
+-> Lethargy
+-> Vomiting
+-> Feeling of sickness
+-> Dryness
+-> Confusion
+-> Constipation
+-> Blurred vision
+-> Weakness
+-> Nervousness
+-> Headache`);
+    }
+  
+  // // Uncomment and edit to make your own intent handler
+  // // uncomment `intentMap.set('your intent name here', yourFunctionHandler);`
+  // // below to get this function to be run when a Dialogflow intent is matched
+  // function yourFunctionHandler(agent) {
+  //   agent.add(`This message is from Dialogflow's Cloud Functions for Firebase editor!`);
+  //   agent.add(new Card({
+  //       title: `Title: this is a card title`,
+  //       imageUrl: 'https://developers.google.com/actions/images/badges/XPM_BADGING_GoogleAssistant_VER.png',
+  //       text: `This is the body text of a card.  You can even use line\n  breaks and emoji! 💁`,
+  //       buttonText: 'This is a button',
+  //       buttonUrl: 'https://assistant.google.com/'
+  //     })
+  //   );
+  //   agent.add(new Suggestion(`Quick Reply`));
+  //   agent.add(new Suggestion(`Suggestion`));
+  //   agent.setContext({ name: 'weather', lifespan: 2, parameters: { city: 'Rome' }});
+  // }
+
+  // // Uncomment and edit to make your own Google Assistant intent handler
+  // // uncomment `intentMap.set('your intent name here', googleAssistantHandler);`
+  // // below to get this function to be run when a Dialogflow intent is matched
+  // function googleAssistantHandler(agent) {
+  //   let conv = agent.conv(); // Get Actions on Google library conv instance
+  //   conv.ask('Hello from the Actions on Google client library!') // Use Actions on Google library
+  //   agent.add(conv); // Add Actions on Google library responses to your agent's response
+  // }
+  // // See https://github.com/dialogflow/fulfillment-actions-library-nodejs
+  // // for a complete Dialogflow fulfillment library Actions on Google client library v2 integration sample
+
+  // Run the proper function handler based on the matched Dialogflow intent name
+  let intentMap = new Map();
+  intentMap.set('Suggestmedicines', suggestionmed);
+  intentMap.set('MedicinesOrder', medavailable);
+  intentMap.set('Frocin 500', frocinintro);
+  intentMap.set('MedicinesDetails', medavailable);
+  intentMap.set('Nipa Plus', nipaintro);
+  intentMap.set('Metmol 650', metmolintro);
+  intentMap.set('Cyclotab', cyclotabintro);
+  intentMap.set('Cyclotab - custom Caution', cyclocautionintro);
+  intentMap.set('Cyclotab - custom Dosage', cyclodosintro);
+  intentMap.set('Cyclotab_Caution', cyclocautionintro);
+  intentMap.set('LAMOCOLD', lamocoldintro);
+  intentMap.set('Caution - custom Cyclotab', cyclocautionintro);
+  intentMap.set('MusclePainJointPain', musclejointpain);
+  intentMap.set('MusclePainJointPain - yes', feversymptom);
+  intentMap.set('MusclePainJointPain - yes - yes', askage);
+  intentMap.set('Muscle Fever declare 16 or more', symsuggestion16);
+  intentMap.set('Muscle Fever declare 12to15', symsuggestion12);
+  intentMap.set('Muscle Fever declare 10to11', symsuggestion10);
+  intentMap.set('Muscle Fever declare less10', symsuggestionless10);
+  intentMap.set('IfeelLikeIamHavingFever', feversymptom);
+  intentMap.set('IfeelLikeIamHavingFever - yes', feversymptomyes);
+  intentMap.set('IfeelLikeIamHavingFever - yes - yes', askage);
+  intentMap.set('SuggestionFever', askage);
+  intentMap.set('Shivering, Shaking, Chills', feversymptomyes);
+  intentMap.set('StomachPain', StomachQues);
+  intentMap.set('StomachPain - Middle', MStomach); // ASK THE DOCTOR
+  intentMap.set('StomachPain - Middle - yes', acidity);
+  intentMap.set('StomachPain - Middle - no', consultdoc);
+  intentMap.set('StomachPain - Right Side', RSStomach);
+  intentMap.set('StomachPain - Left Side', LSStomach);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-yes', BRSStomach);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no', Vomitques);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes', feverques);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - yes', adultques);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - yes - yes', NYNDVCA);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - yes - no', NYNDVCNA);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - no', adultques);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - no - yes', VNDNFA);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - yes - no - no', VNDNFNA);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - no', feverques);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - no - yes', Consultyoudoctor);
+  intentMap.set('StomachPain - Right Side - Burning Sensation Ans-no - no - no', consultdoc);
+  intentMap.set('Fever 16 or more', suggestion16);
+  intentMap.set('Fever 12to15', suggestion12);
+  intentMap.set('Fever 10to11', suggestion10);
+  intentMap.set('Fever less10', suggestionless10);
+  intentMap.set('Headache', headache);
+  intentMap.set('Headache - Without Fever', headachewf);
+  intentMap.set('Headache - With Fever', headfever);
+  intentMap.set('Headache - With Fever - ND', Vomitques);
+  intentMap.set('Headache - With Fever - NYDV', coldques);
+  intentMap.set('Headache - With Fever - NYYDVC', adultques);
+  intentMap.set('Headache - With Fever - NYYDVC - yes', NYYDVCA);
+  intentMap.set('Headache - With Fever - NYYDVC - no', NYYDVCNA);
+  intentMap.set('Headache - With Fever - NYNDVC', adultques);
+  intentMap.set('Headache - With Fever - NYNDVC - yes', NYNDVCA);
+  intentMap.set('Headache - With Fever - NYNDVC - no', NYNDVCNA);
+  intentMap.set('Headache - With Fever - NNDV', coldques);
+  intentMap.set('Headache - With Fever - NNYDVC', FeverColdSuggestion);
+  intentMap.set('Headache - With Fever - NNNDVC', Consultyoudoctor);
+  intentMap.set('Headache - With Fever - YD', Vomiting);
+  intentMap.set('Headache - With Fever - YD - Vomiting', adultques);
+  intentMap.set('Headache - With Fever - YD - Vomiting - yes', FDVA);
+  intentMap.set('Headache - With Fever - YD - Vomiting - no', FDVNA);
+  intentMap.set('Headache - With Fever - YD - Loosemotion', FDL);
+  intentMap.set('Headache - With Fever - YD - VomitingLoosemotion', adultques);
+  intentMap.set('Headache - With Fever - YD - VomitingLoosemotion - yes', FDVLA);
+  intentMap.set('Headache - With Fever - YD - VomitingLoosemotion - no', FDVLNA);
+  intentMap.set('Main Fever declare 16 or more', symsuggestion16);
+  intentMap.set('Main Fever Declare 12to15', symsuggestion12);
+  intentMap.set('Main Fever Declare 10to11', symsuggestion10);
+  intentMap.set('Main Fever Declare less10', symsuggestionless10);
+  intentMap.set('Vomiting', feverques);
+  intentMap.set('Vomiting - yes', headfever);
+  intentMap.set('Vomiting - yes - yes', adultques);
+  intentMap.set('Vomiting - yes - no', adultques);
+  intentMap.set('Vomiting - yes - no - yes', VNDFA);
+  intentMap.set('Vomiting - yes - no - no', VNDFNA);
+  intentMap.set('Vomiting - yes - yes - yes', FDVA);
+  intentMap.set('Vomiting - yes - yes - no', FDVNA);
+  intentMap.set('Vomiting - no', headfever);
+  intentMap.set('Vomiting - no - yes', adultques);
+  intentMap.set('Vomiting - no - yes - yes', VDNFA);
+  intentMap.set('Vomiting - no - yes - no', VDNFNA);
+  intentMap.set('Vomiting - no - no', adultques);
+  intentMap.set('Vomiting - no - no - yes', VNDNFA);
+  intentMap.set('Vomiting - no - no - no', VNDNFNA);
+  intentMap.set('Diarrhea', feverques);
+  intentMap.set('DiarrheaF', Vomitques);
+  intentMap.set('DFV', adultques);
+  intentMap.set('DFVA', FDVA);
+  intentMap.set('DFVNA', FDVNA);
+  intentMap.set('DFNV', adultques);
+  intentMap.set('DFNVA', DFNVA);
+  intentMap.set('DFNVNA', DFNVNA);
+  intentMap.set('DiarrheaNF', Vomitques);
+  intentMap.set('DNFV', adultques);
+  intentMap.set('DNFVA', VDNFA);
+  intentMap.set('DNFVNA', VDNFNA);
+  intentMap.set('DNFNV', adultques);
+  intentMap.set('DNFNVA', DNFNVA);
+  intentMap.set('DNFNVNA', DNFNVNA);
+  intentMap.set('Domstal', domstalintro);
+  intentMap.set('Domstal - DomstalSideEffects', domstalsidefpre);
+  intentMap.set('Domstal - DomstalSideEffects - DomstalUsage', domstalusagemain);
+  intentMap.set('Domstal - DomstalUsage', domstalusage);
+  intentMap.set('Domstal - DomstalUsage - DomstalSideEffects', domstalsidefpremain);
+  intentMap.set('Caution - custom Domstal', domstalsidefpremain);
+  intentMap.set('Norflox', norfloxintro);
+  intentMap.set('Norflox - NorfloxSideE&Pre', norfloxsideefpre);
+  intentMap.set('Caution - custom Norflox', norfloxsideefpre);
+  intentMap.set('BackPain', backpain);
+  intentMap.set('Metrogyl', metrogylintro);
+  intentMap.set('Metrogyl - MetrogylSideEffects', metrogylsidepre);
+  intentMap.set('Pan D', pandintro);
+  intentMap.set('Pan D - PanDSideEffects', pandsidepre);
+  intentMap.set('Oson O', osonointro);
+  intentMap.set('Oson O - OsonOSideEffects', osonosidepre);
+  intentMap.set('Digene', digeneintro);
+  intentMap.set('Digene - DigeneSideEffects', digenesidepre);
+  intentMap.set('Cyclopam', cyclopamintro);
+  intentMap.set('Cyclopam - CyclopamSideEffects', cyclopamsidepre);
+  // intentMap.set('your intent name here', googleAssistantHandler);
+  agent.handleRequest(intentMap);
+});
